@@ -10,7 +10,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex justify-between items-center p-4 px-6">
           <div className="flex items-center gap-2 font-bold text-xl">
             <MessageCircle className="h-8 w-8 text-green-600" />
-            <span>Whatsapp</span>
+            <span>trial</span>
           </div>
           <div className="flex items-center gap-3">
             <ThemeSwitcher />
@@ -27,7 +27,7 @@ export default function Home() {
                 <MessageCircle className="h-8 w-8 text-green-600" />
               </div>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold">Whatsapp</h1>
+            <h1 className="text-4xl md:text-5xl font-bold">trial</h1>
             <p className="text-lg text-muted-foreground">
               Whatsapp Chat App
             </p>
