@@ -10,13 +10,13 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "WaChat - Enterprise WhatsApp Business Platform",
-  description: "Production-ready WhatsApp Business integration platform built with Next.js 15, Supabase, and WhatsApp Cloud API. Real-time messaging, broadcast groups, template management, and more.",
+  title: "Whatsapp - Whatsapp Chat App",
+  description: "Whatsapp Chat App",
   keywords: ["WhatsApp", "Business", "Messaging", "Next.js", "Supabase", "Real-time", "Broadcast", "Templates"],
-  authors: [{ name: "WaChat" }],
+  authors: [{ name: "Whatsapp" }],
   openGraph: {
-    title: "WaChat - Enterprise WhatsApp Business Platform",
-    description: "Production-ready WhatsApp Business integration platform with real-time messaging, broadcast groups, and template management.",
+    title: "Whatsapp - Whatsapp Chat App",
+    description: "Whatsapp Chat App",
     type: "website",
   },
 };

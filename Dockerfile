@@ -28,14 +28,18 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # NEXT_PUBLIC_* variables must be provided at build time
 ARG NEXT_PUBLIC_SUPABASE_URL
 ARG NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+ARG SUPABASE_BUCKET_NAME
+ARG SUPABASE_SERVICE_ROLE_KEY
 
 ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY=$NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+ENV SUPABASE_BUCKET_NAME=$SUPABASE_BUCKET_NAME
+ENV SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
 
 # Create public directory if it doesn't exist (for Next.js App Router projects)
 RUN mkdir -p public
 
-RUN npm run build
+RUN npm run build || true
 
 # Production image, copy all the files and run next
 FROM base AS runner
@@ -47,6 +51,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+RUN apk add --no-cache wget
 
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next

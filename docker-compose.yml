@@ -1,14 +1,16 @@
-version: '3.8'
-
 services:
   whatsapp-chat:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        # Build-time environment variables for NEXT_PUBLIC_* vars
+        # Build-time environment variables for NEXT_PUBLIC_* vars and Supabase bucket name
         NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY:-}
+        SUPABASE_BUCKET_NAME: ${SUPABASE_BUCKET_NAME:-}
+        SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
     container_name: whatsapp-chat-app
     image: whatsapp-chat:latest
     ports:

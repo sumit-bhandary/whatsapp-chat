@@ -1,15 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Configure Supabase client using the service role key for server-side storage operations
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+function getSupabaseUrl() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!url) {
+    throw new Error('NEXT_PUBLIC_SUPABASE_URL is required for Supabase storage operations');
+  }
+  return url;
+}
 
-// Storage bucket name for Supabase
-const BUCKET_NAME = process.env.SUPABASE_BUCKET_NAME || '';
+function getSupabaseServiceRoleKey() {
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for Supabase storage operations');
+  }
+  return key;
+}
 
-if (!BUCKET_NAME) {
-  throw new Error('SUPABASE_BUCKET_NAME is required for Supabase storage operations');
+function getSupabaseClient() {
+  return createClient(getSupabaseUrl(), getSupabaseServiceRoleKey());
+}
+
+function getBucketName() {
+  const bucketName = process.env.SUPABASE_BUCKET_NAME;
+  if (!bucketName) {
+    throw new Error('SUPABASE_BUCKET_NAME is required for Supabase storage operations');
+  }
+  return bucketName;
 }
 
 /**
@@ -195,8 +211,8 @@ export async function downloadAndUploadToSupabase(
 
     console.log(`Uploading to Supabase storage: ${storageKey} (${buffer.length} bytes)`);
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from(BUCKET_NAME)
+    const { data: uploadData, error: uploadError } = await getSupabaseClient().storage
+      .from(getBucketName())
       .upload(storageKey, buffer, {
         contentType: mimeType,
         upsert: true,
@@ -233,8 +249,8 @@ export async function uploadFileToSupabase(
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from(BUCKET_NAME)
+    const { data: uploadData, error: uploadError } = await getSupabaseClient().storage
+      .from(getBucketName())
       .upload(storageKey, buffer, {
         contentType: file.type,
         upsert: true,
@@ -266,8 +282,8 @@ export async function generatePresignedUrl(
     const fileExtension = getFileExtensionFromMimeType(mimeType);
     const storageKey = `${senderId}/${mediaId}.${fileExtension}`;
 
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
+    const { data, error } = await getSupabaseClient().storage
+      .from(getBucketName())
       .createSignedUrl(storageKey, expiresIn);
 
     if (error) {
@@ -295,8 +311,8 @@ export async function checkStorageFileExists(
     const storageKey = `${senderId}/${mediaId}.${fileExtension}`;
 
     // Try to create a short-lived signed URL to confirm existence
-    const { data, error } = await supabase.storage
-      .from(BUCKET_NAME)
+    const { data, error } = await getSupabaseClient().storage
+      .from(getBucketName())
       .createSignedUrl(storageKey, 60);
 
     if (error) return false;
@@ -318,7 +334,7 @@ export async function deleteFromSupabaseStorage(
     const fileExtension = getFileExtensionFromMimeType(mimeType);
     const storageKey = `${senderId}/${mediaId}.${fileExtension}`;
 
-    const { data, error } = await supabase.storage.from(BUCKET_NAME).remove([storageKey]);
+    const { data, error } = await getSupabaseClient().storage.from(getBucketName()).remove([storageKey]);
     if (error) {
       throw error;
     }
